@@ -68,6 +68,7 @@ class Generator(object):
         self.model = Model(inputs=[inputs], outputs=[outputs])
 
     def get_model(self):
+        print(self.model.summary())
         return self.model
 
 # Discriminator
@@ -87,6 +88,7 @@ class Discriminator(object):
         self.model = Model(inputs=[inputs], outputs=[outputs])
 
     def get_model(self):
+        print(self.model.summary())
         return self.model
 
 # DCGAN
@@ -233,11 +235,14 @@ if __name__ == '__main__':
     g_optim = Adam(lr=0.0001, beta_1=0.5, beta_2=0.999)
     d_optim = Adam(lr=0.0001, beta_1=0.5, beta_2=0.999)
     ## DAGMファイル読み取る用改修
-    img_data_Normal = load_imgs(str(Path('DAGM2007/Normal').resolve()), 'Class1')
-    img_data_Normal = img_data_Normal.astype(np.float32) / 255
+    img_data_Normal = load_imgs(str(Path('../DAGM2007/Normal').resolve()), 'Class1')
+    # img_data_Normal = img_data_Normal.astype(np.float32) / 255
+    img_data_Normal = (img_data_Normal.astype(np.float32) - 127.5) / 127.5  # [0, 255] -> [-1, 1], こっちでやってみる
     img_data_Normal = img_data_Normal.reshape(img_data_Normal.shape[0], IMAGE_SIZE, IMAGE_SIZE, IMAGE_CHANNELS)  # (1000, 28, 28, 1)
-    img_data_withDefects = load_imgs(str(Path('DAGM2007/withDefects').resolve()), 'Class1_def')
-    img_data_withDefects = img_data_withDefects.astype(np.float32) / 255
+
+    img_data_withDefects = load_imgs(str(Path('../DAGM2007/withDefects').resolve()), 'Class1_def')
+    # img_data_withDefects = img_data_withDefects.astype(np.float32) / 255
+    img_data_withDefects = (img_data_withDefects.astype(np.float32) - 127.5) / 127.5  # [0, 255] -> [-1, 1], こっちでやってみる
     img_data_withDefects = img_data_withDefects.reshape(img_data_withDefects.shape[0], IMAGE_SIZE, IMAGE_SIZE, IMAGE_CHANNELS)  # (150, 28, 28, 1)
     # # 訓練用画像枚数を画像総数の8割とし、テスト画像枚数を残りの２割として抽出
     # train_image_num = int(img_data_Normal.shape[0] * 0.8)
@@ -306,7 +311,9 @@ if __name__ == '__main__':
 K.set_learning_phase(1)
 
 def denormalize(X):
-    return ((X + 1.0)/2.0*255.0).astype(dtype=np.uint8)
+    gen_imgs = gen_imgs * 127.5 + 127.5  # [-1, 1] -> [0, 255], こっち？
+    # return ((X + 1.0)/2.0*255.0).astype(dtype=np.uint8)
+    return gen_imgs
 
 if __name__ == '__main__':
     iterations = 100
