@@ -229,8 +229,8 @@ def load_imgs(root_dir, class_name):
 # train
 if __name__ == '__main__':
     batch_size = 16
-    # epochs = 100
-    epochs = 1
+    epochs = 100
+    # epochs = 1
     input_dim = 100
     g_optim = Adam(lr=0.0001, beta_1=0.5, beta_2=0.999)
     d_optim = Adam(lr=0.0001, beta_1=0.5, beta_2=0.999)
