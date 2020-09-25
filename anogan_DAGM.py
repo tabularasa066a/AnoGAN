@@ -228,8 +228,8 @@ def load_imgs(root_dir, class_name):
 
 # train
 if __name__ == '__main__':
-    batch_size = 16
-    epochs = 100
+    batch_size = 32
+    epochs = 1000
     # epochs = 1
     input_dim = 100
     g_optim = Adam(lr=0.0001, beta_1=0.5, beta_2=0.999)
@@ -311,9 +311,10 @@ if __name__ == '__main__':
 K.set_learning_phase(1)
 
 def denormalize(X):
-    gen_imgs = gen_imgs * 127.5 + 127.5  # [-1, 1] -> [0, 255], こっち？
-    # return ((X + 1.0)/2.0*255.0).astype(dtype=np.uint8)
-    return gen_imgs
+    # gen_imgs = X
+    # gen_imgs = gen_imgs * 127.5 + 127.5  # [-1, 1] -> [0, 255], こっち？
+    # return gen_imgs
+    return ((X + 1.0)/2.0*255.0).astype(dtype=np.uint8)
 
 if __name__ == '__main__':
     iterations = 100
